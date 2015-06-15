@@ -1,0 +1,19 @@
+      <table>
+        <tr>
+          <th>Date</th>
+          <th class="amount">Amount</th>
+          <th>Source</th>
+          <th>Description</th>
+        </tr>
+      {% for row in allIncomeRows %}
+
+        <tr>
+          <!-- <td class="row id">{{row.id}}</td> -->
+          <td class="row date">{{row.date}}</td>
+          <td class="row amount">{{format_money(row.amount)}}</td>
+          <td class="row source">{{row.source.name}}</td>
+          <!-- <td class="row notes">{{row.notes if row.notes != None}}</td> -->
+        </tr>
+
+      {% endfor %}
+      </table>

@@ -1,0 +1,172 @@
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+ }
+
+$hue: 212;
+$base-font-size: 13px;
+$base-font: $base-font-size 'Helvetica Neue' sans-serif;
+$cell-font-size: $base-font-size;
+
+$color1: hsl($hue,70%,100%);
+$color2: hsl($hue,70%,50%);
+$color3: hsl($hue,70%,30%);
+$gray-1: hsl($hue,0%,97%);
+$gray-2: hsl($hue,0%,50%);
+
+// 9 12 16 21 28 37 50 67 89
+
+$page-background-color: $color1;
+
+$h1-size: $base-font-size / .75 / .75;
+$h2-size: $base-font-size / .75;
+$h3-size: $base-font-size;
+$nav-font-size: $base-font-size;
+
+$heading-color: $color2;
+
+$link-color: $color2;
+$link-hover-color: $color3;
+$active-link-color: $color3;
+
+
+body {
+  font: $base-font;
+  background-color: $page-background-color;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: $h1-size;
+
+  &.page-heading {
+    display: inline-block;
+    width: 170px;
+    // float: left;
+  }
+}
+
+h2 {
+  font-size: $h2-size;
+}
+
+h3 {
+  font-size: $h3-size;
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: $link-hover-color;
+  }
+}
+
+.active-link {
+  color: $active-link-color;
+}
+
+.page-wrapper {
+  padding: 30px 0 50px 0;
+  margin: 0 auto;
+  width: 600px;
+}
+
+nav {
+  margin-bottom: 50px;
+  ul {
+    text-align: center;
+  }
+  ul li {
+    display: inline-block;
+    width: 150px;
+    font-size: $nav-font-size;
+  }
+}
+
+#preview-box {
+  padding: 5px 20px;
+  font-size: $base-font-size / .75;
+}
+
+#date-preview {
+  display: inline-block;
+  // background-color: orange;
+  width: 95px;
+}
+
+#amount-preview {
+  display: inline-block;
+  // background-color: pink;
+  width: 60px;
+  text-align: right;
+}
+
+#category-preview {
+  display: inline-block;
+  padding-left: 15px;
+  // background-color: red;
+  width: 150px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table th {
+  font-weight: bold;
+  text-align: left;
+  &.amount {
+    text-align: right;
+  }
+}
+
+table tr td, table tr th {
+  padding: 5px 10px;
+  font-size: $cell-font-size;
+  background-color: $gray-1;
+}
+
+.table-container {
+  background-color: $gray-1;
+  padding: 15px 15px;
+}
+
+.row {
+
+  &.date {
+    width: 95px;
+    // background-color: green;
+  }
+  &.amount {
+    width: 80px;
+    text-align: right;
+    // background-color: pink;
+  } 
+  &.category, &.source {
+    width: 150px;
+  }
+
+}
+
+.input-box-container {
+  display: inline-block;
+  padding: 5px;
+  width: 200px;
+  margin: 0 auto;
+}
+
+
+
+
+
+
+
+

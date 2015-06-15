@@ -1,0 +1,22 @@
+{% extends "expenses.html" %}
+{% block content %}
+  <div class="page-wrapper">
+
+  <nav>
+    <ul>
+      <li><a href="{{ url_for('Expenses') }}">Expenses</a></li>
+      <li class="active-link">Income</li>
+      <li><a href="{{ url_for('Overview') }}">Overview</a></li>
+    </ul>
+  </nav>
+
+  <h1 class="page-heading">Income</h1>
+
+    <div class="table-container">
+
+      {% include "income_table.html" %}
+
+    </div>
+
+  </div>
+{% endblock %}

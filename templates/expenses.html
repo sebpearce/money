@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+    filename='reset.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+    filename='style.css') }}">
+
+  <meta charset="UTF-8">
+
+  <title>Expenses</title>
+
+</head>
+
+<body>
+
+{% block content %}
+
+  <div class="page-wrapper">
+
+  <nav>
+    <ul>
+      <li class="active-link">Expenses</li>
+      <li><a href="{{ url_for('Income') }}">Income</a></li>
+      <li><a href="{{ url_for('Overview') }}">Overview</a></li>
+    </ul>
+  </nav>
+
+  <h1 class="page-heading">Expenses</h1>
+
+    <div class="input-box-container">
+      <form id="input-form" method="post" action="">
+        <input type="text" id="input-box" name="input" autofocus="true">
+        <input type="submit" value="Add">
+      </form>
+    </div>
+
+    <div id="preview-box">
+      
+      <span id="date-preview"></span>
+      <span id="amount-preview"></span>
+      <span id="category-preview"></span>
+
+    </div>
+
+    <div class="table-container">
+
+      {% include "expenses_table.html" %}
+
+    </div>
+
+  </div>
+
+{% endblock %}
+
+<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+
+<script type="text/javascript">
+
+  categoryNames = {};
+  shortcuts = {};
+
+  {% for row in allCategoryRows %}
+  categoryNames[{{ row.id }}] = "{{ row.name }}";
+  {% endfor %}
+
+  {% for row in allShortcuts %}
+  shortcuts[{{ row.id }}] = {{ row.value }};
+  {% endfor %}
+
+  $( '#input-box' ).keydown(function(event){
+
+    code = event.keyCode || event.which;
+
+    if (code == 219) {
+      decrementDate(date_obj);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+      event.preventDefault;
+    } else if (code == 221) {
+      incrementDate(date_obj);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+      event.preventDefault;
+    }
+
+  });
+
+  $( '#input-box' ).keyup(function(event){
+
+    code = event.keyCode || event.which;
+    cat_id = 0;
+
+    if (code >= 48 && code <= 57) {
+      amount = $( '#input-box' ).val();
+      amount = parseInt(amount, 10);
+      $( '#amount-preview' ).text( (amount/100).toFixed(2) );
+    }
+
+    switch (code) {
+
+      {% for row in allShortcuts %}
+      case {{ row.value }}: cat_id = {{ row.id }};
+        category = cat_id;
+        $( '#category-preview ').text(categoryNames[cat_id]);
+        // $( '#input-form' ).submit();    
+        // $( '#input-box' ).val('');
+      break;
+      {% endfor %}
+      default:
+      break;
+    }
+
+
+  });
+
+  $( '#input-form' ).submit(function(event) {
+
+    if (validateInput($( '#input-box' ).val())) {
+
+      // var re = /^\D*?(\d+)\D*?$/
+      amount = $( '#input-box' ).val();
+      amount = parseInt(amount, 10);
+
+      var jsonData = [
+        {"name":"command","value":"insert"},
+        {"name":"date","value":date},
+        {"name":"amount","value":amount},
+        {"name":"category","value":category},
+        {"name":"description","value":description}
+      ];
+
+      console.log(JSON.stringify(jsonData));
+
+      var pathname = window.location.pathname;
+
+      $.post( pathname, jsonData, function(response) {
+        $('.table-container').html(response);
+      });
+
+      event.preventDefault();
+
+      $( '#input-box' ).val('');
+
+    }  else {
+      console.log('Validation failed');
+      event.preventDefault();
+    }
+
+  });
+
+</script>
+
+</body>
+
+</html>

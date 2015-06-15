@@ -1,0 +1,17 @@
+      <p>Total expenses: {{ format_money(totalExpenses) }}</p>
+      <p>Total income: {{ format_money(totalIncome) }}</p>
+      
+      <table>
+        <tr>
+          <th>Category</th>
+          <th>Amount</th>
+        </tr>
+        {% for category in totalCategories %}
+        {% if totalCategories[category] != 0 %}
+        <tr>
+          <td>{{ categoryNames[category] }}</td>
+          <td>{{ format_money(totalCategories[category]) }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>

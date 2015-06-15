@@ -1,0 +1,19 @@
+      <table>
+        <tr>
+          <th>Date</th>
+          <th class="amount">Amount</th>
+          <th>Category</th>
+          <th>Description</th>
+        </tr>
+      {% for row in allExpensesRows %}
+        <tr>
+          <td class="row date">{{row.date}}</td>
+          <td class="row amount">{{format_money(row.amount)}}</td>
+          <td class="row category">{{row.category.name}}</td>
+          <td class="row description">{{row.description if row.description != None}}</td>
+          <td class="row delete"><a class="delete-link" name="{{ row.id }}">X</a></td>
+          <!-- <td class="row notes">{{row.notes if row.notes != None}}</td> -->
+        </tr>
+
+      {% endfor %}
+      </table>
