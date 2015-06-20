@@ -5,29 +5,40 @@
 
 $hue: 212;
 $base-font-size: 13px;
-$base-font: $base-font-size 'Helvetica Neue' sans-serif;
+$base-font-family: 'Open Sans' sans-serif;
+$base-font: $base-font-size $base-font-family;
 $cell-font-size: $base-font-size;
+$input-box-font: ($base-font-size / .75) $base-font-family;
 
 $color1: hsl($hue,70%,100%);
 $color2: hsl($hue,70%,50%);
 $color3: hsl($hue,70%,30%);
 $gray-1: hsl($hue,0%,97%);
 $gray-2: hsl($hue,0%,50%);
+$gray-3: hsl($hue,0%,75%);
+$gray-4: hsl($hue,0%,90%);
+
+$page-background-color: $color1;
+
+$nav-bg-color: $page-background-color;
+$nav-hover-color: $gray-4;
+$nav-border-color: $gray-3;
+$nav-border-hover-color: $gray-2;
 
 // 9 12 16 21 28 37 50 67 89
 
-$page-background-color: $color1;
 
 $h1-size: $base-font-size / .75 / .75;
 $h2-size: $base-font-size / .75;
 $h3-size: $base-font-size;
-$nav-font-size: $base-font-size;
+$nav-font: $base-font-size $base-font-family;
+
 
 $heading-color: $color2;
 
 $link-color: $color2;
 $link-hover-color: $color3;
-$active-link-color: $color3;
+$active-link-color: $color2;
 
 
 body {
@@ -70,6 +81,7 @@ a {
 
 .active-link {
   color: $active-link-color;
+  border-color: $color2;
 }
 
 .page-wrapper {
@@ -86,13 +98,28 @@ nav {
   ul li {
     display: inline-block;
     width: 150px;
-    font-size: $nav-font-size;
+    padding: 5px 0;
+    background-color: $nav-bg-color;
+    border-bottom: 2px solid $nav-border-color;
+    font: $nav-font;
   }
+  ul a li:hover {
+    color: $active-link-color;
+    border-color: $color2;
+  }
+  ul a li {
+    color: #333;
+  }
+}
+
+.content {
+  width: 410px;
+  margin: 0 auto;
 }
 
 #preview-box {
   padding: 5px 20px;
-  font-size: $base-font-size / .75;
+  font-size: $base-font-size;
 }
 
 #date-preview {
@@ -117,7 +144,6 @@ nav {
 
 table {
   border-collapse: collapse;
-  width: 100%;
 }
 
 table th {
@@ -128,32 +154,98 @@ table th {
   }
 }
 
+.delete-link {
+  display: none;
+  padding: 0 5px;
+  border-radius: 50%;
+  color: #ccc;
+  font-weight: bold;
+  &:hover {
+    background-color: #FFAAA1;
+    color: #D82621;
+    text-decoration: none;
+  }
+}
+
+table tr:hover {
+  .delete-link {
+    display: inline;
+  }
+}
+
 table tr td, table tr th {
-  padding: 5px 10px;
+  padding: 3px 10px;
   font-size: $cell-font-size;
-  background-color: $gray-1;
+  background: transparent;
 }
 
 .table-container {
   background-color: $gray-1;
   padding: 15px 15px;
+  width: 450px;
+}
+
+td.category,
+th.category,
+td.source,
+th.source {
+  padding-left: 50px;
 }
 
 .row {
+
+  &.date:focus,
+  &.amount:focus,
+  &.category:focus,
+  &.source:focus,
+  &.description:focus {
+    // border: none;
+    background: $page-background-color;  
+    // padding: 4px 3px;
+    // font-size: $cell-font-size;
+  }
 
   &.date {
     width: 95px;
     // background-color: green;
   }
   &.amount {
-    width: 80px;
+    // width: 90px;
+    width: 120px;
     text-align: right;
     // background-color: pink;
+
   } 
   &.category, &.source {
-    width: 150px;
+    // width: 100px;
+    width: 120px;
   }
 
+  &.description {
+    width: auto;
+  }
+
+  &.delete {
+    // width: 30px;
+  }
+
+}
+
+
+th.description,
+td.description {
+  display: none;
+}
+
+.category-select,
+.source-select {
+  width: 100px;
+  overflow: hidden;
+  background: transparent;
+  font: $base-font;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
 }
 
 .input-box-container {
@@ -162,6 +254,28 @@ table tr td, table tr th {
   width: 200px;
   margin: 0 auto;
 }
+
+#input-box {
+  width: 110px;
+  padding: 5px 10px;
+  font: $input-box-font;
+  border: 1px solid $gray-3;
+  border-radius: 10px;
+  &:focus {
+    outline: none;
+    box-shadow: inset 0px 0px 5px #eee;
+  }
+}
+
+/* Overview page */
+
+.overview-catsrc {
+  width: 170px;
+}
+
+
+
+
 
 
 

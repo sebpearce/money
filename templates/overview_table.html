@@ -9,8 +9,25 @@
         {% for category in totalCategories %}
         {% if totalCategories[category] != 0 %}
         <tr>
-          <td>{{ categoryNames[category] }}</td>
-          <td>{{ format_money(totalCategories[category]) }}</td>
+          <td class="overview-catsrc">{{ categoryNames[category] }}</td>
+          <td class="overview-amount">{{ format_money(totalCategories[category]) }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+
+      <br>
+
+      <table>
+        <tr>
+          <th>Source</th>
+          <th>Amount</th>        
+        </tr>
+        {% for src in totalSources %}
+        {% if totalSources[src] != 0 %}
+        <tr>
+          <td class="overview-catsrc">{{ sourceNames[src] }}</td>
+          <td class="overview-amount">{{ format_money(totalSources[src]) }}</td>
         </tr>
         {% endif %}
         {% endfor %}

@@ -1,3 +1,7 @@
+      {% for month, month_group in allExpensesRows|groupby('date_obj.month')|reverse %}
+
+      <h3>{{ year }}</h3>
+
       <table>
         <tr>
           <th class="date">Date</th>
@@ -5,7 +9,7 @@
           <th class="category">Category</th>
           <th class="description">Description</th>
         </tr>
-      {% for row in allExpensesRows %}
+      {% for row in month_group %}
         <tr>
           <td class="row date">{{row.date}}</td>
           <td class="row amount">{{format_money(row.amount)}}</td>
@@ -23,4 +27,5 @@
         </tr>
       {% endfor %}
       </table>
+      {% endfor %}
 

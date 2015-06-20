@@ -5,7 +5,7 @@
 <head>
 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',
-    filename='reset.css') }}">
+    filename='reset.css') }}">  
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',
     filename='style.css') }}">
 
@@ -24,16 +24,18 @@
   <nav>
     <ul>
       <li class="active-link">Expenses</li>
-      <li><a href="{{ url_for('Income') }}">Income</a></li>
-      <li><a href="{{ url_for('Overview') }}">Overview</a></li>
+      <a href="{{ url_for('Income') }}"><li>Income</li></a>
+      <a href="{{ url_for('Overview') }}"><li>Overview</li></a>
     </ul>
   </nav>
+
+  <div class="content">
 
   <h1 class="page-heading">Expenses</h1>
 
     <div class="input-box-container">
       <form id="input-form" method="post" action="">
-        <input type="text" id="input-box" name="input" autofocus="true">
+        <input type="text" id="input-box" name="input" autofocus="true" maxlength="8">
         <input type="submit" value="Add">
       </form>
     </div>
@@ -52,85 +54,178 @@
 
     </div>
 
+  </div> <!-- end content -->
+
   </div>
 
 {% endblock %}
 
 <script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
 <script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery.hotkeys.js') }}"></script>
 
 <script type="text/javascript">
 
+  /*
+   *
+   *
+   * Make sure user can't just press enter on blank input and enter a row
+   *
+   * separate expenses/income tables by month
+   * same for overview
+   *
+   * don't allow alpha chars in input box
+   *
+   * make fields click-editable
+   *
+   */
+
+  function processInput(value) {
+
+    // extract number and optional category flag
+    var re = /^([0-9]+)$/
+    if (!re.test(value)) {
+      return false;
+    }
+    if (value.match(re)) {
+
+      amount = value;
+      console.log("amount set to ", amount);
+      $( '#amount-preview ').text(formatAsMoney(amount));
+
+    } else {
+
+      console.log("processInput failed to find a match");
+
+    }
+
+  }
+
   categoryNames = {};
+  sourceNames = {};
   shortcuts = {};
 
+  sourceNames[0] = "";
+  {% for row in allSourceRows %}
+  sourceNames[{{ row.id }}] = "{{ row.name }}";
+  {% endfor %}  
+
+  categoryNames[0] = "";
   {% for row in allCategoryRows %}
   categoryNames[{{ row.id }}] = "{{ row.name }}";
   {% endfor %}
 
+  // get shortcuts from DB and make relationship to category IDs
   {% for row in allShortcuts %}
-  shortcuts[{{ row.id }}] = {{ row.value }};
+  shortcuts[{{ row.id }}] = "{{ row.value }}";
   {% endfor %}
 
-  $( '#input-box' ).keydown(function(event){
 
-    code = event.keyCode || event.which;
+  // bind shortcut keys
 
-    if (code == 219) {
-      decrementDate(date_obj);
+  {% for row in allShortcuts %}
+
+  $(document).bind('keydown', '{{ row.value }}', function(e){
+    category = {{ row.id }};
+    console.log("category set to ", category);
+    $( '#category-preview ').text(categoryNames[category]);
+  });
+  $(' #input-box ').bind('keydown', '{{ row.value }}', function(e){
+    category = {{ row.id }};
+    console.log("category set to ", category);
+    $( '#category-preview ').text(categoryNames[category]);
+    e.stopPropagation();
+    e.preventDefault();
+  });
+
+  {% endfor %}
+
+
+  // bind date shortcuts [ and ]
+
+  $(document).bind('keydown', '[', function(e){
+      decrementDate(date_obj, 1);
       date = formatDateString(date_obj);
       $(' #date-preview ').text(date);
-      event.preventDefault;
-    } else if (code == 221) {
-      incrementDate(date_obj);
+  });
+  $(' #input-box ').bind('keydown', '[', function(e){
+      decrementDate(date_obj, 1);
       date = formatDateString(date_obj);
       $(' #date-preview ').text(date);
-      event.preventDefault;
-    }
+      e.stopPropagation();
+      e.preventDefault();
+  });
+  $(document).bind('keydown', 'shift+[', function(e){
+      decrementDate(date_obj, 10);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+  });
+  $(' #input-box ').bind('keydown', 'shift+[', function(e){
+      decrementDate(date_obj, 10);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+      e.stopPropagation();
+      e.preventDefault();
+  });
+  $(document).bind('keydown', ']', function(e){
+      incrementDate(date_obj, 1);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+  });
+  $(' #input-box ').bind('keydown', ']', function(e){
+      incrementDate(date_obj, 1);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+      e.stopPropagation();
+      e.preventDefault();
+  });
+  $(document).bind('keydown', 'shift+]', function(e){
+      incrementDate(date_obj, 10);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+  });
+  $(' #input-box ').bind('keydown', 'shift+]', function(e){
+      incrementDate(date_obj, 10);
+      date = formatDateString(date_obj);
+      $(' #date-preview ').text(date);
+      e.stopPropagation();
+      e.preventDefault();
+  });
+
+
+
+  $( '#input-box' ).on('input', function(){
+
+    var val = $(this).val();
+    console.log(val);
+    processInput(val);
 
   });
 
-  $( '#input-box' ).keyup(function(event){
+  $( 'input' ).click(function(){
+    this.select();
+  });
 
-    code = event.keyCode || event.which;
-    cat_id = 0;
+  $(' .category-select ').on('change', function(){
 
-    if (code >= 48 && code <= 57) {
-      amount = $( '#input-box' ).val();
-      amount = parseInt(amount, 10);
-      $( '#amount-preview' ).text( (amount/100).toFixed(2) );
-    }
-
-    switch (code) {
-
-      {% for row in allShortcuts %}
-      case {{ row.value }}: cat_id = {{ row.id }};
-        category = cat_id;
-        $( '#category-preview ').text(categoryNames[cat_id]);
-        // $( '#input-form' ).submit();    
-        // $( '#input-box' ).val('');
-      break;
-      {% endfor %}
-      default:
-      break;
-    }
+    alert(this.value);
 
 
   });
+
+
+
 
   $( '#input-form' ).submit(function(event) {
 
-    if (validateInput($( '#input-box' ).val())) {
-
-      // var re = /^\D*?(\d+)\D*?$/
-      amount = $( '#input-box' ).val();
-      amount = parseInt(amount, 10);
+    if (validateInput && validateVariables()) {
 
       var jsonData = [
         {"name":"command","value":"insert"},
         {"name":"date","value":date},
         {"name":"amount","value":amount},
         {"name":"category","value":category},
+        {"name":"source","value":source},
         {"name":"description","value":description}
       ];
 
@@ -142,13 +237,13 @@
         $('.table-container').html(response);
       });
 
-      event.preventDefault();
-
       $( '#input-box' ).val('');
+      $( '#amount-preview ').text('');
+      event.preventDefault();
 
     }  else {
       console.log('Validation failed');
-      event.preventDefault();
+      return false;
     }
 
   });

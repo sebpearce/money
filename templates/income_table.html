@@ -1,18 +1,28 @@
       <table>
         <tr>
-          <th>Date</th>
+          <th class="date">Date</th>
           <th class="amount">Amount</th>
-          <th>Source</th>
-          <th>Description</th>
+          <th class="category">Source</th>
+          <th class="description">Description</th>
         </tr>
+        
       {% for row in allIncomeRows %}
 
         <tr>
           <!-- <td class="row id">{{row.id}}</td> -->
           <td class="row date">{{row.date}}</td>
           <td class="row amount">{{format_money(row.amount)}}</td>
-          <td class="row source">{{row.source.name}}</td>
-          <!-- <td class="row notes">{{row.notes if row.notes != None}}</td> -->
+          <td class="row source">
+            <select class="source-select">
+              <option selected>{{row.source.name}}</option>
+              <option disabled>&mdash;</option>
+              {% for src in allSourceRows %}
+              <option value="{{src.id}}">{{src.name}}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td class="row description">{{row.description if row.description != None}}</td>
+          <td class="row delete"><a class="delete-link" name="{{ row.id }}">X</a></td>
         </tr>
 
       {% endfor %}

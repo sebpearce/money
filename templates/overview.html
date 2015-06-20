@@ -5,11 +5,13 @@
 
   <nav>
     <ul>
-      <li><a href="{{ url_for('Expenses') }}">Expenses</a></li>
-      <li><a href="{{ url_for('Income') }}">Income</a></li>
+      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a>
+      <a href="{{ url_for('Income') }}"><li>Income</li></a>
       <li class="active-link">Overview</li>
     </ul>
   </nav>
+
+  <div class="content">  
 
   <h1 class="page-heading">Overview</h1>
 
@@ -18,6 +20,8 @@
       {% include "overview_table.html" %}
 
     </div>
+
+  </div>
 
   </div>
 {% endblock %}

@@ -24,7 +24,7 @@ class Shortcut(Base):
   __tablename__ = 'shortcuts'
 
   id = Column(Integer, primary_key = True)
-  value = Column(Integer, nullable = False)
+  value = Column(String(3), nullable = False)
 
 class ExpensesItem(Base):
   __tablename__ = 'expenses'
