@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, url_for, redirect, request, flash, jsonify
-from sqlalchemy import create_engine, desc
+from sqlalchemy import create_engine, desc, and_
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, IncomeSource, ExpensesItem, IncomeItem, Variable, Shortcut
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 # import locale
 # locale.setlocale(locale.LC_ALL,'')
@@ -24,22 +25,42 @@ def add_date_object(all_rows):
     row.date_obj = datetime.strptime(row.date, "%Y-%m-%d").date()
   return all_rows
 
+def first_of_current_month():
+  now = datetime.now()
+  return now + relativedelta(day=1)
+
+def n_months_ago(n):
+  now = datetime.now()
+  return now + relativedelta(months = -n, day = 1)
+
+# def two_months_ago():
+#   now = datetime.now()
+#   return now + relativedelta(months=-2, day=1)
+
+# def three_months_ago():
+#   now = datetime.now()
+#   return now + relativedelta(months=-3, day=1)
+
+
+
+######################################################
+
 @app.route('/')
 @app.route('/expenses/', methods = ['GET','POST'])
 def Expenses():
 
-  now = datetime.now()
-  start_date = (now - timedelta(days=90)).strftime('%Y-%m-%d')
+  start_date = n_months_ago(3).strftime("%Y-%m-%d")
 
   if request.method == 'POST':
 
     if request.form['command'] == 'delete':
+
       deleted_id = request.form['id']
       deletedItem = session.query(ExpensesItem).filter_by(id=deleted_id).one()
       session.delete(deletedItem)
       session.commit()
       print "Deleted row " + deleted_id
-      allExpensesRows = session.query(ExpensesItem).join("category").order_by(desc("date")).all()
+      allExpensesRows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date >= start_date).order_by(desc("date")).all()
       add_date_object(allExpensesRows)
       allCategoryRows = session.query(Category).all()
       return render_template('expenses_table.html', 
@@ -48,6 +69,7 @@ def Expenses():
 
 
     elif request.form['command'] == 'insert':
+
       input_date = request.form['date']
       input_amount = request.form['amount']
       input_category = request.form['category']
@@ -62,7 +84,7 @@ def Expenses():
                                                 input_amount,
                                                 input_category, 
                                                 input_description)
-      allExpensesRows = session.query(ExpensesItem).join("category").order_by(desc("date")).all()
+      allExpensesRows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date >= start_date).order_by(desc("date")).all()
       add_date_object(allExpensesRows)
       allCategoryRows = session.query(Category).all()
       return render_template('expenses_table.html', 
@@ -71,6 +93,7 @@ def Expenses():
 
 
     elif request.form['command'] == 'update':
+
       input_id = request.form['id']
       input_field = request.form['field']
       input_value = request.form['value']
@@ -89,7 +112,7 @@ def Expenses():
       session.commit()
       print "Updated row %s" % str(input_id)
 
-      allExpensesRows = session.query(ExpensesItem).join("category").order_by(desc("date")).all()
+      allExpensesRows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date >= start_date).order_by(desc("date")).all()
       add_date_object(allExpensesRows)
       allCategoryRows = session.query(Category).all()
       return render_template('expenses_table.html', 
@@ -108,8 +131,14 @@ def Expenses():
                            allCategoryRows = allCategoryRows,
                            allShortcuts = allShortcuts)
 
+
+######################################################
+
+
 @app.route('/income/', methods = ['GET','POST'])
 def Income():
+
+  start_date = n_months_ago(3).strftime("%Y-%m-%d")
 
   if request.method == 'POST':
 
@@ -182,45 +211,80 @@ def Income():
                            allIncomeRows = allIncomeRows,
                            allSourceRows = allSourceRows)
 
+
+######################################################
+
+class Month:
+  
+  def __init__(self, date):
+    self.date = date
+    self.name = date.strftime("%B %Y")
+    self.date_string = date.strftime("%Y-%m-%d")
+    self.end_date = date + relativedelta(day=31)
+    self.end_date_string = self.end_date.strftime("%Y-%m-%d")
+
 @app.route('/overview/')
 def Overview():
 
-  allExpensesRows = session.query(ExpensesItem).join("category").order_by(desc("date")).all()
-  allIncomeRows = session.query(IncomeItem).join("source").order_by(desc("date")).all()
+
   allCategoryRows = session.query(Category).all()
   allSourceRows = session.query(IncomeSource).all()
 
-  # populate totalCategories with a 0 for each category_id
-  totalCategories = {}
+  # populate categoryNames with names of categories from db
   categoryNames = {}
   for row in allCategoryRows:
-    totalCategories[row.id] = 0
     categoryNames[row.id] = row.name
 
-  totalSources = {}
+  # populate sourceNames with names of sources from db
   sourceNames = {}
   for row in allSourceRows:
-    totalSources[row.id] = 0
     sourceNames[row.id] = row.name
 
-  totalExpenses = 0
-  totalIncome = 0
+  # start_date = three_months_ago().strftime("%Y-%m-%d")
 
-  for row in allExpensesRows:
-    totalExpenses += row.amount
-    totalCategories[row.category_id] += row.amount
+  months = []
+  months.append(Month(first_of_current_month())) 
 
-  for row in allIncomeRows:
-    totalIncome += row.amount
-    totalSources[row.source_id] += row.amount
+  for i in range(1, 6):
+    months.append(Month(n_months_ago(i))) 
+
+  for m in months:
+    m.cat_totals = {}
+    m.src_totals = {}
+    for row in allCategoryRows:
+      m.cat_totals[row.id] = 0
+    for row in allSourceRows:
+      m.src_totals[row.id] = 0
+    m.total_expenses = 0
+    m.total_income = 0
+    m.expenses_rows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date.between(m.date_string, m.end_date_string)).order_by(desc("date")).all()
+    m.income_rows = session.query(IncomeItem).join("source").filter(IncomeItem.date.between(m.date_string, m.end_date_string)).order_by(desc("date")).all()
+    for row in m.expenses_rows:
+      m.total_expenses += row.amount
+      m.cat_totals[row.category_id] += row.amount
+    for row in m.income_rows:
+      m.total_income += row.amount
+      m.src_totals[row.source_id] += row.amount
+
+
+  # get total expenses and income for current year
+
+
+
+
 
   return render_template('overview.html', 
-                         totalExpenses = totalExpenses, 
-                         totalIncome = totalIncome, 
-                         totalCategories = totalCategories,
+                         months = months,
                          categoryNames = categoryNames,
-                         totalSources = totalSources,
                          sourceNames = sourceNames)
+
+  # return render_template('overview.html', 
+  #                        totalExpenses = totalExpenses, 
+  #                        totalIncome = totalIncome, 
+  #                        totalForEachCategory = totalForEachCategory,
+  #                        categoryNames = categoryNames,
+  #                        totalForEachSource = totalForEachSource,
+  #                        sourceNames = sourceNames)
 
 @app.route('/new-category/')
 def NewCategory():
@@ -229,7 +293,11 @@ def NewCategory():
 @app.context_processor
 def utility_processor():
   def format_money(amount):
-    return format(float(amount)/100, ',.2f')
+    result = format(float(amount)/100, ',.2f')
+    if amount < 0:
+      # replace hyphen with minus char
+      result = result.replace('-', u'\u2212')
+    return result
   return dict(format_money=format_money)
 
 if __name__ == '__main__':

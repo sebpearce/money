@@ -8,7 +8,7 @@
       {% for row in allExpensesRows %}
         <tr>
           <td class="row date">{{row.date}}</td>
-          <td class="row amount">{{format_money(row.amount)}}</td>
+          <td class="row amount">&minus;{{format_money(row.amount)}}</td>
           <td class="row category">
             <select class="category-select">
               <option selected>{{row.category.name}}</option>

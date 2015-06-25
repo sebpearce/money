@@ -1,0 +1,100 @@
+      {% for month in months %}
+
+      {% if month.total_income != 0 or month.total_expenses != 0 %}
+
+      <div class="panel">
+
+      <div class="overview table-container">
+
+      <h2 class="overview month-heading">{{ month.name }}</h2>
+
+      {% if month.total_income != 0 %}
+
+      <h3>Income</h3>
+
+      <table class="overview income">
+        <tr>
+          <th class="overview catsrc">Source</th>
+          <th class="overview amount">Amount</th>
+          <th class="overview percentage">% of total</th>
+        </tr>
+        {% for src in month.src_totals %}
+        {% if month.src_totals[src] != 0 %}
+        <tr>
+          <td class="overview catsrc">{{ sourceNames[src] }}</td>
+          <td class="overview amount">{{ format_money(month.src_totals[src]) }}</td>
+          <td class="overview percentage">{{ '%0.1f' % ((month.src_totals[src] / month.total_income) * 100) }}%</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        <tr>
+          <td class="overview income total-cell">Total</td>
+          <td class="overview income total-cell amount">{{ format_money(month.total_income) }}</td>
+        </tr>
+      </table>
+
+      <br>
+
+      {% endif %}
+
+
+      {% if month.total_expenses != 0 %}
+
+      <h3>Expenses</h3>
+
+      <table class="overview expenses">
+        <tr>
+          <th class="overview catsrc">Category</th>
+          <th class="overview amount">Amount</th>
+          <th class="overview percentage">% of income</th>
+        </tr>
+        {% for cat in month.cat_totals %}
+        {% if month.cat_totals[cat] != 0 %}
+        <tr>
+          <td class="overview catsrc">{{ categoryNames[cat] }}</td>
+          <td class="overview amount">&minus;{{ format_money(month.cat_totals[cat]) }}</td>
+          <td class="overview percentage">{{ '%0.1f' % ((month.cat_totals[cat] / month.total_income) * 100) }}%</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        <tr>
+          <td class="overview expenses total-cell">Total</td>
+          <td class="overview expenses total-cell amount">&minus;{{ format_money(month.total_expenses) }}</td>
+          <td class="overview expenses total-cell percentage">{{ '%0.1f' % ((month.total_expenses / month.total_income) * 100) }}%</td>
+        </tr>
+
+
+        {% if month.total_income != 0 and month.total_expenses != 0 %}
+
+        <tr>
+          <td class="overview catsrc">&nbsp;</td>
+          <td class="overview amount">&nbsp;</td>
+        </tr>
+
+        <tr>
+            {% if month.total_income - month.total_expenses >= 0 %}
+            <td class="overview total-cell grand-total">Grand total</td>
+            <td class="overview total-cell grand-total amount profit">{{ format_money(month.total_income - month.total_expenses) }}</td>
+            {% else %}
+            <td class="overview total-cell grand-total">Grand total</td>
+            <td class="overview total-cell grand-total amount loss">{{ format_money(month.total_income - month.total_expenses) }}</td>
+            {% endif %}
+        </tr>
+
+        {% endif %}
+
+      </table>
+
+      <br>
+
+      {% endif %}
+
+      </div>
+
+      </div>
+
+      {% endif %}
+
+      {% endfor %}
+
+

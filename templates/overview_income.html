@@ -1,0 +1,34 @@
+      <h1>Income</h1>
+
+      {% for month in months %}
+
+      {% if month.total_income != 0 %}
+
+      <h2>{{ month.name }}</h2>
+
+      <table class="overview income">
+        <tr>
+<!--           <th>Source</th>
+          <th>Amount</th>
+          <th class="overview percentage">% of total</th>
+ -->        </tr>
+        {% for src in month.src_totals %}
+        {% if month.src_totals[src] != 0 %}
+        <tr>
+          <td class="overview catsrc">{{ sourceNames[src] }}</td>
+          <td class="overview amount">{{ format_money(month.src_totals[src]) }}</td>
+          <td class="overview percentage">{{ '%0.1f' % ((month.src_totals[src] / month.total_income) * 100) }}%</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        <tr>
+          <td class="overview total-cell">Total</td>
+          <td class="overview total-cell amount">{{ format_money(month.total_income) }}</td>
+        </tr>
+      </table>
+
+      <br>
+
+      {% endif %}
+
+      {% endfor %}

@@ -29,14 +29,15 @@
     </ul>
   </nav>
 
-  <div class="content">
+  <div class="expenses content">
 
   <h1 class="page-heading">Expenses</h1>
 
     <div class="input-box-container">
       <form id="input-form" method="post" action="">
+        <label for="input-box">Amount:</label>
         <input type="text" id="input-box" name="input" autofocus="true" maxlength="8">
-        <input type="submit" value="Add">
+        <input id="input-submit" type="submit" value="Add">
       </form>
     </div>
 
@@ -192,7 +193,15 @@
       e.preventDefault();
   });
 
+/*
+  $( '#input-box ').keypress(function(e){
+    if (e.keyCode == 65) {
+      e.stopPropagation;
+      e.preventDefault;
+    }
+  });
 
+*/  
 
   $( '#input-box' ).on('input', function(){
 

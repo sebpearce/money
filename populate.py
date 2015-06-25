@@ -3,6 +3,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import random
 
 from models import Base, Category, IncomeSource, ExpensesItem, IncomeItem, Variable, Shortcut
 
@@ -95,7 +96,7 @@ src_job = IncomeSource(name="Job")
 session.add(src_job)
 session.commit()
 
-src_makojob = IncomeSource(name="Mako's job")
+src_makojob = IncomeSource(name="Partner's job")
 session.add(src_makojob)
 session.commit()
 
@@ -112,10 +113,8 @@ session.add(src_gifts)
 session.commit()
 
 
-expense1 = ExpensesItem(date="2015-06-12", amount=1750, description="Better Burger",
-                        category=cat_eo)
-expense2 = ExpensesItem(date="2015-06-11", amount=570, description="Hair wax",
-                        category=cat_groceries)
+expense1 = ExpensesItem(date="2015-06-12", amount=1750, description="Better Burger", category=cat_eo)
+expense2 = ExpensesItem(date="2015-06-11", amount=570, description="Hair wax", category=cat_groceries)
 expense3 = ExpensesItem(date="2015-06-10", amount=1230, category=cat_groceries)
 expense4 = ExpensesItem(date="2015-05-17", amount=4999, category=cat_phone)
 expense5 = ExpensesItem(date="2015-06-13", amount=1250, category=cat_eo, description="Renkon")
@@ -199,7 +198,35 @@ session.add(income5)
 
 session.commit()
 
+for i in range(100):
 
+  random_amt = random.randint(1,5000)
+  day = str(random.randint(1,28)).zfill(2)
+  month = str(random.randint(1,6)).zfill(2)
+  year = '2015'
+  random_category_id = random.randint(1, 20)
+  random_date = '%s-%s-%s' % (year, month, day)
+
+  random_expense = ExpensesItem(date = random_date,
+                                amount = random_amt,
+                                category_id = random_category_id)
+  session.add(random_expense)
+  session.commit()
+
+for i in range(30):
+
+  random_amt = random.randint(1,5000)
+  day = str(random.randint(1,28)).zfill(2)
+  month = str(random.randint(1,6)).zfill(2)
+  year = '2015'
+  random_src_id = random.randint(1, 5)
+  random_date = '%s-%s-%s' % (year, month, day)
+
+  random_income = IncomeItem(date = random_date,
+                             amount = random_amt,
+                             source_id = random_src_id)
+  session.add(random_income)
+  session.commit()
 
 
 print "DB population complete."

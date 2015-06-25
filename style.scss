@@ -4,26 +4,29 @@
  }
 
 $hue: 212;
-$base-font-size: 13px;
-$base-font-family: 'Open Sans' sans-serif;
+$base-font-size: 15px;
+$base-font-family: 'Source Sans Pro' sans-serif;
 $base-font: $base-font-size $base-font-family;
 $cell-font-size: $base-font-size;
 $input-box-font: ($base-font-size / .75) $base-font-family;
 
-$color1: hsl($hue,70%,100%);
-$color2: hsl($hue,70%,50%);
-$color3: hsl($hue,70%,30%);
+$color-1: hsl($hue,70%,100%);
+$color-2: hsl($hue,70%,59%);
+$color-3: hsl($hue,70%,50%);
 $gray-1: hsl($hue,0%,97%);
-$gray-2: hsl($hue,0%,50%);
-$gray-3: hsl($hue,0%,75%);
-$gray-4: hsl($hue,0%,90%);
+$gray-2: hsl($hue,0%,90%);
+$gray-3: hsl($hue,0%,80%);
+$gray-4: hsl($hue,0%,60%);
 
-$page-background-color: $color1;
+$profit-color: hsl(100,50%,50%);
+$loss-color: hsl(0,60%,60%);
+
+$page-background-color: $color-1;
 
 $nav-bg-color: $page-background-color;
-$nav-hover-color: $gray-4;
+$nav-hover-color: $gray-2;
 $nav-border-color: $gray-3;
-$nav-border-hover-color: $gray-2;
+$nav-border-hover-color: $gray-4;
 
 // 9 12 16 21 28 37 50 67 89
 
@@ -34,11 +37,11 @@ $h3-size: $base-font-size;
 $nav-font: $base-font-size $base-font-family;
 
 
-$heading-color: $color2;
+$heading-color: $color-2;
 
-$link-color: $color2;
-$link-hover-color: $color3;
-$active-link-color: $color2;
+$link-color: $color-2;
+$link-hover-color: $color-3;
+$active-link-color: $color-2;
 
 
 body {
@@ -57,16 +60,21 @@ h1 {
   &.page-heading {
     display: inline-block;
     width: 170px;
+    vertical-align: top;
     // float: left;
   }
 }
 
 h2 {
   font-size: $h2-size;
+  font-weight: 400;
 }
 
 h3 {
   font-size: $h3-size;
+  font-weight: 600;
+  // font-style: italic;
+  color: $gray-4;
 }
 
 a {
@@ -81,13 +89,14 @@ a {
 
 .active-link {
   color: $active-link-color;
-  border-color: $color2;
+  border-color: $color-2;
 }
 
 .page-wrapper {
   padding: 30px 0 50px 0;
   margin: 0 auto;
-  width: 600px;
+  width: 1150px;
+  // background-color: hsl(210,80%,95%);
 }
 
 nav {
@@ -105,7 +114,7 @@ nav {
   }
   ul a li:hover {
     color: $active-link-color;
-    border-color: $color2;
+    border-color: $color-2;
   }
   ul a li {
     color: #333;
@@ -113,8 +122,16 @@ nav {
 }
 
 .content {
-  width: 410px;
   margin: 0 auto;
+}
+
+.expenses.content,
+.income.content {
+  width: 420px;
+}
+
+.clearfix {
+  clear: both;
 }
 
 #preview-box {
@@ -147,7 +164,7 @@ table {
 }
 
 table th {
-  font-weight: bold;
+  font-weight: 600;
   text-align: left;
   &.amount {
     text-align: right;
@@ -161,7 +178,7 @@ table th {
   color: #ccc;
   font-weight: bold;
   &:hover {
-    background-color: #FFAAA1;
+    background-color: #FFD4CE;
     color: #D82621;
     text-decoration: none;
   }
@@ -174,16 +191,22 @@ table tr:hover {
 }
 
 table tr td, table tr th {
-  padding: 3px 10px;
+  padding: 3px 0px;
   font-size: $cell-font-size;
   background: transparent;
 }
 
 .table-container {
-  background-color: $gray-1;
-  padding: 15px 15px;
-  width: 450px;
+  width: 420px;
+  padding: 15px 25px;
+  margin: 0;
+  // background-color: $gray-1;
+  // background-color: $page-background-color;
+  // background-color: hsl(0,0%,98%);
+  // border: 1px solid #ddd;
+  // border-radius: 5px;
 }
+
 
 td.category,
 th.category,
@@ -206,12 +229,12 @@ th.source {
   }
 
   &.date {
-    width: 95px;
+    width: 80px;
     // background-color: green;
   }
   &.amount {
     // width: 90px;
-    width: 120px;
+    width: 110px;
     text-align: right;
     // background-color: pink;
 
@@ -248,6 +271,12 @@ td.description {
   -webkit-appearance: none;
 }
 
+label[for="input-box"] {
+  font-size: $base-font-size * .75;
+  color: $gray-4;
+  display: block;
+}
+
 .input-box-container {
   display: inline-block;
   padding: 5px;
@@ -257,20 +286,121 @@ td.description {
 
 #input-box {
   width: 110px;
-  padding: 5px 10px;
+  height: 41px;
+  padding: 5px 7px;
   font: $input-box-font;
-  border: 1px solid $gray-3;
-  border-radius: 10px;
+  border: 2px solid $gray-3;
+  border-radius: 5px;
+  &:hover {
+    border-color: $gray-4;
+  }
   &:focus {
     outline: none;
-    box-shadow: inset 0px 0px 5px #eee;
+    border-color: $color-2;
+    // box-shadow: inset 0px 0px 5px #ccc;
+  }
+}
+
+#input-submit {
+  height: 41px;
+  padding: 5px 10px;
+  vertical-align: top;
+
+  border-radius: 5px;
+  border: none;
+
+  font: ($base-font-size * .75) $base-font-family;
+
+  background-color: $color-2;
+  color: white;
+
+  &:hover {
+    background-color: $color-3;
   }
 }
 
 /* Overview page */
 
-.overview-catsrc {
-  width: 170px;
+
+.overview.content {
+  width: 1100px;
+  display: block;
+  // background-color: pink;
+}
+
+
+.panel {
+  width: 350px;
+  display: inline-block;
+  vertical-align: top;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  &:nth-child(3n+0) {
+    margin-right: 0;
+  }
+}
+
+.overview.month-heading {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.profit {
+  color: $profit-color;
+}
+
+.loss {
+  color: $loss-color;
+}
+
+.overview.table-container {
+  width: auto;
+}
+
+table.overview th,
+table.overview td {
+  padding: 3px 0px;
+  font-size: $cell-font-size;
+  background: transparent;
+}
+
+.overview.catsrc {
+  width: 150px;
+  // background-color: lightblue;
+}
+
+.overview.amount {
+  width: 80px;
+  text-align: right;
+  // background-color: pink;
+}
+
+.overview.income.total-cell.amount {
+  // color: $profit-color;
+}
+
+.overview.expenses.total-cell.amount {
+  // color: $loss-color;
+}
+
+.overview.percentage {
+  width: 110px;
+  color: hsla(0,0%,0%,0.3);
+  // background-color: green;
+  padding-left: 15px;
+  text-align: right;
+}
+
+.total-cell {
+  border-top: 1px solid $gray-4;
+  font-weight: 600;
+  &.amount {
+    text-align: right;
+  }
+}
+
+.grand-total {
+  border-top: 4px double $gray-4;
 }
 
 
