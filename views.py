@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from sys import argv
+
+if len(argv) == 2:
+  FILENAME = 'sqlite:///' + argv[1]
+else:
+  FILENAME = 'sqlite:///money.db'
+
 from flask import Flask, render_template, url_for, redirect, request, flash, jsonify
 from sqlalchemy import create_engine, desc, and_
 from sqlalchemy.orm import sessionmaker
@@ -13,7 +20,7 @@ from dateutil.relativedelta import relativedelta
 
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///money.db')
+engine = create_engine(FILENAME)
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -33,15 +40,11 @@ def n_months_ago(n):
   now = datetime.now()
   return now + relativedelta(months = -n, day = 1)
 
-# def two_months_ago():
-#   now = datetime.now()
-#   return now + relativedelta(months=-2, day=1)
+def getAllIncomeRows(start_date, end_date):
+  return session.query(IncomeItem).join("source").filter(IncomeItem.date.between(start_date, end_date)).order_by(IncomeItem.date.desc(),IncomeItem.id.desc()).all()
 
-# def three_months_ago():
-#   now = datetime.now()
-#   return now + relativedelta(months=-3, day=1)
-
-
+def getAllExpensesRows(start_date, end_date):
+  return session.query(ExpensesItem).join("category").filter(ExpensesItem.date.between(start_date, end_date)).order_by(ExpensesItem.date.desc(),ExpensesItem.id.desc()).all()
 
 ######################################################
 
@@ -49,7 +52,8 @@ def n_months_ago(n):
 @app.route('/expenses/', methods = ['GET','POST'])
 def Expenses():
 
-  start_date = n_months_ago(3).strftime("%Y-%m-%d")
+  start_date = n_months_ago(2).strftime("%Y-%m-%d")
+  current_date = datetime.now().strftime("%Y-%m-%d")
 
   if request.method == 'POST':
 
@@ -60,7 +64,9 @@ def Expenses():
       session.delete(deletedItem)
       session.commit()
       print "Deleted row " + deleted_id
-      allExpensesRows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date >= start_date).order_by(desc("date")).all()
+
+      allExpensesRows = getAllExpensesRows(start_date, current_date)  
+
       add_date_object(allExpensesRows)
       allCategoryRows = session.query(Category).all()
       return render_template('expenses_table.html', 
@@ -84,7 +90,8 @@ def Expenses():
                                                 input_amount,
                                                 input_category, 
                                                 input_description)
-      allExpensesRows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date >= start_date).order_by(desc("date")).all()
+      
+      allExpensesRows = getAllExpensesRows(start_date, current_date)  
       add_date_object(allExpensesRows)
       allCategoryRows = session.query(Category).all()
       return render_template('expenses_table.html', 
@@ -112,7 +119,7 @@ def Expenses():
       session.commit()
       print "Updated row %s" % str(input_id)
 
-      allExpensesRows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date >= start_date).order_by(desc("date")).all()
+      allExpensesRows = getAllExpensesRows(start_date, current_date)  
       add_date_object(allExpensesRows)
       allCategoryRows = session.query(Category).all()
       return render_template('expenses_table.html', 
@@ -122,7 +129,7 @@ def Expenses():
 
   else:  # normal GET request
 
-    allExpensesRows = session.query(ExpensesItem).join("category").filter(ExpensesItem.date >= start_date).order_by(desc("date")).all()
+    allExpensesRows = getAllExpensesRows(start_date, current_date)  
     add_date_object(allExpensesRows)
     allCategoryRows = session.query(Category).all()
     allShortcuts = session.query(Shortcut).all()
@@ -134,11 +141,11 @@ def Expenses():
 
 ######################################################
 
-
 @app.route('/income/', methods = ['GET','POST'])
 def Income():
 
-  start_date = n_months_ago(3).strftime("%Y-%m-%d")
+  start_date = n_months_ago(2).strftime("%Y-%m-%d")
+  current_date = datetime.now().strftime("%Y-%m-%d")
 
   if request.method == 'POST':
 
@@ -148,7 +155,7 @@ def Income():
       session.delete(deletedItem)
       session.commit()
       print "Deleted row " + deleted_id
-      allIncomeRows = session.query(IncomeItem).join("source").order_by(desc("date")).all()
+      allIncomeRows = getAllIncomeRows(start_date, current_date)
       allSourceRows = session.query(IncomeSource).all()
       return render_template('income_table.html', 
                              allIncomeRows = allIncomeRows,
@@ -170,7 +177,7 @@ def Income():
                                                 input_amount,
                                                 input_source, 
                                                 input_description)
-      allIncomeRows = session.query(IncomeItem).join("source").order_by(desc("date")).all()
+      allIncomeRows = getAllIncomeRows(start_date, current_date)
       allSourceRows = session.query(IncomeSource).all()
       return render_template('income_table.html', 
                               allIncomeRows = allIncomeRows,
@@ -196,7 +203,7 @@ def Income():
       session.commit()
       print "Updated row %s" % str(input_id)
 
-      allIncomeRows = session.query(IncomeItem).join("source").order_by(desc("date")).all()
+      allIncomeRows = getAllIncomeRows(start_date, current_date)
       allSourceRows = session.query(IncomeSource).all()
       return render_template('income_table.html', 
                               allIncomeRows = allIncomeRows,
@@ -204,7 +211,7 @@ def Income():
 
   else: # normal GET request
 
-    allIncomeRows = session.query(IncomeItem).join("source").order_by(desc("date")).all()
+    allIncomeRows = getAllIncomeRows(start_date, current_date)
     allSourceRows = session.query(IncomeSource).all()
     # return "This is the main page."
     return render_template('income.html', 
@@ -223,9 +230,7 @@ class Month:
     self.end_date = date + relativedelta(day=31)
     self.end_date_string = self.end_date.strftime("%Y-%m-%d")
 
-@app.route('/overview/')
-def Overview():
-
+def getMonthsArray(num_months):
 
   allCategoryRows = session.query(Category).all()
   allSourceRows = session.query(IncomeSource).all()
@@ -240,12 +245,10 @@ def Overview():
   for row in allSourceRows:
     sourceNames[row.id] = row.name
 
-  # start_date = three_months_ago().strftime("%Y-%m-%d")
-
   months = []
   months.append(Month(first_of_current_month())) 
 
-  for i in range(1, 6):
+  for i in range(1, num_months):
     months.append(Month(n_months_ago(i))) 
 
   for m in months:
@@ -266,25 +269,116 @@ def Overview():
       m.total_income += row.amount
       m.src_totals[row.source_id] += row.amount
 
+  return months
+
+
+@app.route('/overview/')
+@app.route('/overview/month/')
+def Overview():
+
+  months = getMonthsArray(4)
+
+  allCategoryRows = session.query(Category).all()
+  allSourceRows = session.query(IncomeSource).all()
+
+  # populate categoryNames with names of categories from db
+  categoryNames = {}
+  for row in allCategoryRows:
+    categoryNames[row.id] = row.name
+
+  # populate sourceNames with names of sources from db
+  sourceNames = {}
+  for row in allSourceRows:
+    sourceNames[row.id] = row.name
 
   # get total expenses and income for current year
-
-
-
-
 
   return render_template('overview.html', 
                          months = months,
                          categoryNames = categoryNames,
                          sourceNames = sourceNames)
 
-  # return render_template('overview.html', 
-  #                        totalExpenses = totalExpenses, 
-  #                        totalIncome = totalIncome, 
-  #                        totalForEachCategory = totalForEachCategory,
-  #                        categoryNames = categoryNames,
-  #                        totalForEachSource = totalForEachSource,
-  #                        sourceNames = sourceNames)
+
+@app.route('/overview/year/')
+def OverviewYear():
+
+  months = getMonthsArray(12)
+
+  allCategoryRows = session.query(Category).all()
+  allSourceRows = session.query(IncomeSource).all()
+  savingsRate = session.query(Variable).filter_by(name = 'savings_rate').one().value
+
+  # populate categoryNames with names of categories from db
+  categoryNames = {}
+  for row in allCategoryRows:
+    categoryNames[row.id] = row.name
+
+  # populate sourceNames with names of sources from db
+  sourceNames = {}
+  for row in allSourceRows:
+    sourceNames[row.id] = row.name
+
+  totalYearlyIncome = 0
+  totalYearlyExpenses = 0
+  for m in months:
+    totalYearlyIncome += m.total_income
+    totalYearlyExpenses += m.total_expenses
+
+
+  return render_template('overview_year.html', 
+                         months = months,
+                         categoryNames = categoryNames,
+                         sourceNames = sourceNames,
+                         savingsRate = savingsRate,
+                         totalYearlyIncome = totalYearlyIncome,
+                         totalYearlyExpenses = totalYearlyExpenses)
+
+@app.route('/analysis/')
+def Analysis():
+
+  months = getMonthsArray(12)
+
+  allCategoryRows = session.query(Category).all()
+  allSourceRows = session.query(IncomeSource).all()
+
+  all_exp_totals = []
+  all_inc_totals = []
+  all_cat_totals = {}
+  avg_cat_totals = {}
+
+  for row in months:
+    all_exp_totals.append(row.total_expenses)
+    all_inc_totals.append(row.total_income)
+
+  for cat in allCategoryRows:
+    all_cat_totals[cat.name] = []
+    for month in months:
+      # if month.cat_totals[cat.id] > 0:
+      all_cat_totals[cat.name].append(month.cat_totals[cat.id])
+
+  for cat in all_cat_totals:
+    avg_cat_totals[cat] = sum(all_cat_totals[cat]) / float(len(all_cat_totals[cat]))
+
+  avg_mth_exp = sum(all_exp_totals) / float(len(all_exp_totals))
+  avg_mth_inc = sum(all_inc_totals) / float(len(all_inc_totals))
+
+  print all_cat_totals
+  print ''
+  print avg_cat_totals
+
+
+  result_str = '''
+               Your average expenses are $%0.2f a month, or $%0.2f a year.<br><br>
+               Your average income is $%0.2f a month, or $%0.2f a year.<br><br>
+               ''' % ((avg_mth_exp / 100), (avg_mth_exp * 12 / 100), 
+                     (avg_mth_inc / 100), (avg_mth_inc * 12 / 100))
+
+  result_str += 'Average monthly expenses by category:<br><br>'
+
+  for i in sorted(avg_cat_totals):
+    result_str += (i + ': $%0.2f %s' + '<br>') % ((float(avg_cat_totals[i] / 100)), (all_cat_totals[i]))
+
+  return result_str
 
 @app.route('/new-category/')
 def NewCategory():
@@ -299,6 +393,10 @@ def utility_processor():
       result = result.replace('-', u'\u2212')
     return result
   return dict(format_money=format_money)
+
+@app.template_filter('replace_hyphen')
+def replace_hyphen(string):
+    return string.replace('-', u'\u2212')
 
 if __name__ == '__main__':
   # app.secret_key = 'super_secret_key'

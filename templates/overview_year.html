@@ -1,0 +1,34 @@
+{% extends "expenses.html" %}
+{% block content %}
+
+  <div class="page-wrapper">
+
+  <nav>
+    <ul>
+      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a><a href="{{ url_for('Income') }}"><li>Income</li></a><a href="{{ url_for('Overview') }}"><li>Month overview</li></a><li class="active-link">Year overview</li>
+    </ul>
+  </nav>
+
+  <div class="content-container">
+
+    <div class="year-overview content">  
+
+      <h1 class="page-heading">Year overview</h1>
+
+      <div class="year-overview table-container">
+
+        {% include "overview_year_table.html" %}
+
+      </div>
+
+    </div>
+
+  </div>
+
+  </div>
+  
+<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery.hotkeys.js') }}"></script>
+
+{% endblock %}

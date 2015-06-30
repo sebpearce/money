@@ -5,17 +5,15 @@
 
   <nav>
     <ul>
-      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a>
-      <a href="{{ url_for('Income') }}"><li>Income</li></a>
-      <li class="active-link">Overview</li>
+      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a><a href="{{ url_for('Income') }}"><li>Income</li></a><li class="active-link">Month overview</li><a href="{{ url_for('OverviewYear') }}"><li>Year overview</li></a>
     </ul>
   </nav>
 
-  <div class="overview content">  
+  <div class="content-container">
 
-  <h1 class="page-heading">Overview</h1>
+    <div class="month-overview content">  
 
-    <div class="overview panel-container">
+      <h1 class="page-heading">Month overview</h1>
 
       {% include "overview_month.html" %}
 
@@ -24,4 +22,9 @@
   </div>
 
   </div>
+
+<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery.hotkeys.js') }}"></script>
+
 {% endblock %}

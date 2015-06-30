@@ -1,0 +1,46 @@
+<table class="year-overview">
+
+  <tr>
+    <th class="year-overview month-name">Month</th>
+    <th class="year-overview income">Income</th>
+    <th class="year-overview expenses">Expenses</th>
+    <th class="year-overview expenses-percentage"></th>
+    <th class="year-overview saved">Saved</th>
+    <th class="year-overview saved-percentage"></th>
+  </tr>
+
+{% for month in months %}
+{% if month.total_income != 0 or month.total_expenses != 0 %}
+  <tr>
+    <td class="year-overview month-name">{{ month.name }}</td>
+    <td class="year-overview income">{{ format_money(month.total_income) }}</td>
+    <td class="year-overview expenses">&minus;{{ format_money(month.total_expenses) }}</td>
+
+    {% if month.total_income != 0 and month.total_expenses != 0 %}
+
+    <td class="year-overview expenses-percentage">{{ '%0.1f' % ((month.total_expenses / month.total_income) * 100) }}%</td>
+    <td class="year-overview saved{% if month.total_income < month.total_expenses %} loss{% elif (month.total_income - month.total_expenses) >= (month.total_income * savingsRate) %} profit{% endif %}">{{ format_money(month.total_income - month.total_expenses) }}</td>
+    <td class="year-overview saved-percentage{% if month.total_income < month.total_expenses %} loss{% elif (month.total_income - month.total_expenses) >= (month.total_income * savingsRate) %} profit{% endif %}">{{ ('%0.1f' % (((month.total_income - month.total_expenses) / month.total_income) * 100))|replace_hyphen }}%</td>
+
+    {% else %}
+
+    <td class="year-overview expenses-percentage"></td>
+    <td class="year-overview saved {% if month.total_income < month.total_expenses %}loss{% else %}profit{% endif %}">{{ format_money(month.total_income - month.total_expenses) }}</td>
+    <td class="year-overview saved-percentage"></td>
+    {% endif %}
+
+  </tr>
+{% endif %}
+{% endfor %}
+
+{% if totalYearlyIncome != 0 and totalYearlyExpenses != 0 %}
+  <tr>
+    <td class="year-overview month-name total-cell">Total</td>
+    <td class="year-overview income total-cell">{{ format_money(totalYearlyIncome) }}</td>
+    <td class="year-overview expenses total-cell">{{ format_money(totalYearlyExpenses) }}</td>
+    <td class="year-overview expenses-percentage total-cell">{{ '%0.1f' % ((totalYearlyExpenses / totalYearlyIncome) * 100) }}%</td>
+    <td class="year-overview saved total-cell">{{ format_money(totalYearlyIncome - totalYearlyExpenses) }}</td>
+    <td class="year-overview saved-percentage total-cell">{{ '%0.1f' % (((totalYearlyIncome - totalYearlyExpenses) / totalYearlyIncome) * 100) }}%</td>
+  </tr>
+{% endif %}
+</table>

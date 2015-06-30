@@ -4,11 +4,13 @@
  }
 
 $hue: 212;
-$base-font-size: 15px;
-$base-font-family: 'Source Sans Pro' sans-serif;
+$base-font-size: 14px;
+$base-font-family: 'Open Sans' sans-serif;
 $base-font: $base-font-size $base-font-family;
 $cell-font-size: $base-font-size;
 $input-box-font: ($base-font-size / .75) $base-font-family;
+
+$background-image-url: url('mountains.jpg');
 
 $color-1: hsl($hue,70%,100%);
 $color-2: hsl($hue,70%,59%);
@@ -18,18 +20,36 @@ $gray-2: hsl($hue,0%,90%);
 $gray-3: hsl($hue,0%,80%);
 $gray-4: hsl($hue,0%,60%);
 
+$blue: hsl($hue,60%,30%);
+$white: #fff;
+$transparent-gray: hsla(0,0%,0%,0.3);
+
 $profit-color: hsl(100,50%,50%);
 $loss-color: hsl(0,60%,60%);
 
-$page-background-color: $color-1;
+$text-color: #333;
+$preview-text-color: $text-color;
+$heading-color: $text-color;
+$link-color: $color-2;
+$link-hover-color: $white;
+$active-link-color: $white;
+$text-shadow: none;
+// $text-shadow: 0px 1px 2px hsla(0,0%,0%,0.3);
 
+
+$page-background-color: #222;
+
+$nav-text-color: $text-color;
+// $nav-text-color: hsla(0,0%,100%,0.5);
 $nav-bg-color: $page-background-color;
 $nav-hover-color: $gray-2;
-$nav-border-color: $gray-3;
-$nav-border-hover-color: $gray-4;
+$nav-border-color: $white;
+$nav-border-current-page-color: $color-2;
+$nav-border-hover-color: $white;
+
+$table-container-border-color: #ccc;
 
 // 9 12 16 21 28 37 50 67 89
-
 
 $h1-size: $base-font-size / .75 / .75;
 $h2-size: $base-font-size / .75;
@@ -37,30 +57,35 @@ $h3-size: $base-font-size;
 $nav-font: $base-font-size $base-font-family;
 
 
-$heading-color: $color-2;
 
-$link-color: $color-2;
-$link-hover-color: $color-3;
-$active-link-color: $color-2;
 
 
 body {
   font: $base-font;
-  background-color: $page-background-color;
+  // background-color: $page-background-color;
+  background: $background-image-url $page-background-color;
+  background-size: 100%;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: $text-color;
+  line-height: 1.3em;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
+  text-align: left;
 }
 
 h1 {
   font-size: $h1-size;
 
   &.page-heading {
-    display: inline-block;
-    width: 170px;
+    display: block;
+    // width: 170px;
     vertical-align: top;
+    color: $heading-color;
+    text-shadow: $text-shadow;
     // float: left;
   }
 }
@@ -89,13 +114,72 @@ a {
 
 .active-link {
   color: $active-link-color;
-  border-color: $color-2;
+  border-color: $white;
 }
+
+.inline-block {
+  display: inline-block;
+}
+
+label[for="category-select-preview"] {
+  margin-left: 20px;
+}
+
+#category-select-preview {
+  width: 120px;
+}
+
+// .dropdown-container {
+//   position: relative;
+//   width: 200px;
+//   padding: 5px;
+//   background-color: $white;  
+//   cursor: pointer;
+//   font-weight: 600;
+  
+//   &:after {
+//     content: "";
+//     width: 0;
+//     height: 0;
+//     position: absolute;
+//     right: 16px;
+//     top: 50%;
+//     margin-top: -6px;
+//     border-width: 6px 0 6px 6px;
+//     border-style: solid;
+//     border-color: transparent $white;
+//   }
+
+//   .dropdown {
+//     position: absolute;
+//     top: 100%;
+//     left: 0;
+//     right: 0;
+
+//     background-color: $white;
+//     list-style: none;
+//     font-weight: normal;
+//     opacity: 0;
+//     pointer-events: none;
+//   }
+
+//   .active.dropdown {
+//     opacity: 1;
+//     pointer-events: auto;
+//   }
+
+// }
+
+
+
+
+/* ********************************************************************** */
+
 
 .page-wrapper {
   padding: 30px 0 50px 0;
   margin: 0 auto;
-  width: 1150px;
+  // width: 1150px;
   // background-color: hsl(210,80%,95%);
 }
 
@@ -108,17 +192,24 @@ nav {
     display: inline-block;
     width: 150px;
     padding: 5px 0;
-    background-color: $nav-bg-color;
-    border-bottom: 2px solid $nav-border-color;
+    background-color: transparent;
+    border-bottom: 2px solid $nav-border-current-page-color;
     font: $nav-font;
   }
   ul a li:hover {
-    color: $active-link-color;
-    border-color: $color-2;
+    color: $link-hover-color;
+    border-color: $nav-border-hover-color;
   }
   ul a li {
-    color: #333;
+    color: $nav-text-color;
+    border-bottom: 2px solid $nav-border-color;
   }
+}
+
+.content-container {
+  width: 1100px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .content {
@@ -127,7 +218,7 @@ nav {
 
 .expenses.content,
 .income.content {
-  width: 420px;
+  width: 500px;
 }
 
 .clearfix {
@@ -136,27 +227,29 @@ nav {
 
 #preview-box {
   padding: 5px 20px;
-  font-size: $base-font-size;
+  font-size: $base-font-size / .75;
+  color: $preview-text-color;
 }
 
 #date-preview {
   display: inline-block;
   // background-color: orange;
-  width: 95px;
+  width: 110px;
 }
 
 #amount-preview {
   display: inline-block;
   // background-color: pink;
-  width: 60px;
+  width: 100px;
   text-align: right;
 }
 
-#category-preview {
+#category-preview,
+#source-preview {
   display: inline-block;
   padding-left: 15px;
   // background-color: red;
-  width: 150px;
+  width: 180px;
 }
 
 table {
@@ -190,21 +283,30 @@ table tr:hover {
   }
 }
 
+table tr td {
+  padding: 3px 0;
+}
+
 table tr td, table tr th {
-  padding: 3px 0px;
   font-size: $cell-font-size;
   background: transparent;
 }
 
+table tr th {
+  padding: 3px 0 15px 0;
+}
+
 .table-container {
-  width: 420px;
-  padding: 15px 25px;
+  // width: 420px;
+  padding: 25px;
   margin: 0;
   // background-color: $gray-1;
   // background-color: $page-background-color;
-  // background-color: hsl(0,0%,98%);
-  // border: 1px solid #ddd;
-  // border-radius: 5px;
+  background-color: hsl(0,0%,100%);
+  // border: 1px solid $table-container-border-color;
+  border-radius: 10px;
+  opacity: 0.95;
+  text-align: left;
 }
 
 
@@ -241,7 +343,8 @@ th.source {
   } 
   &.category, &.source {
     // width: 100px;
-    width: 120px;
+    // width: 250px;
+    min-width: 230px;
   }
 
   &.description {
@@ -249,7 +352,8 @@ th.source {
   }
 
   &.delete {
-    // width: 30px;
+    width: 20px;
+    overflow: hidden;
   }
 
 }
@@ -262,7 +366,7 @@ td.description {
 
 .category-select,
 .source-select {
-  width: 100px;
+  width: 150px;
   overflow: hidden;
   background: transparent;
   font: $base-font;
@@ -272,15 +376,16 @@ td.description {
 }
 
 label[for="input-box"] {
-  font-size: $base-font-size * .75;
-  color: $gray-4;
   display: block;
+  font-size: $base-font-size * .75;
+  color: $white;
+  text-align: left;
 }
 
 .input-box-container {
   display: inline-block;
   padding: 5px;
-  width: 200px;
+  width: 450px;
   margin: 0 auto;
 }
 
@@ -319,73 +424,78 @@ label[for="input-box"] {
   }
 }
 
-/* Overview page */
+/* Month overview page */
 
 
-.overview.content {
-  width: 1100px;
-  display: block;
+.month-overview.content {
+  // width: 1100px;
+  width: auto;
+  display: inline-block;
   // background-color: pink;
+  text-align: left;
 }
-
 
 .panel {
   width: 350px;
   display: inline-block;
   vertical-align: top;
   margin-bottom: 20px;
-  margin-right: 20px;
+  // margin-right: 20px;
   &:nth-child(3n+0) {
     margin-right: 0;
   }
 }
 
-.overview.month-heading {
+.month-overview.month-heading {
   margin-bottom: 20px;
   font-weight: 600;
 }
 
 .profit {
-  color: $profit-color;
+  color: $profit-color !important;
 }
 
 .loss {
-  color: $loss-color;
+  color: $loss-color !important;
 }
 
-.overview.table-container {
+.month-overview.table-container {
   width: auto;
 }
 
-table.overview th,
-table.overview td {
-  padding: 3px 0px;
+table.month-overview th,
+table.month-overview td {
+  // padding: 3px 0px;
   font-size: $cell-font-size;
   background: transparent;
 }
 
-.overview.catsrc {
+.month-overview th {
+  color: $transparent-gray;
+}
+
+.month-overview.catsrc {
   width: 150px;
   // background-color: lightblue;
 }
 
-.overview.amount {
+.month-overview.amount {
   width: 80px;
   text-align: right;
   // background-color: pink;
 }
 
-.overview.income.total-cell.amount {
+.month-overview.income.total-cell.amount {
   // color: $profit-color;
 }
 
-.overview.expenses.total-cell.amount {
+.month-overview.expenses.total-cell.amount {
   // color: $loss-color;
 }
 
-.overview.percentage {
+.month-overview.percentage {
   width: 110px;
-  color: hsla(0,0%,0%,0.3);
+  color: $transparent-gray;
   // background-color: green;
   padding-left: 15px;
   text-align: right;
@@ -402,6 +512,79 @@ table.overview td {
 .grand-total {
   border-top: 4px double $gray-4;
 }
+
+/* Year overview page */
+
+.year-overview.content {
+  display: block;
+  width: 710px;
+  // background-color: pink;
+}
+
+.year-overview tr td,
+.year-overview tr th {
+  padding-bottom: 8px;
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+.year-overview tr th {
+  font-size: $h2-size;
+  padding-bottom: 1em;
+}
+
+.year-overview.month-name {
+  width: 120px;
+}
+
+.year-overview.income,
+.year-overview.expenses,
+.year-overview.saved,
+.year-overview.expenses-percentage,
+.year-overview.saved-percentage {
+  text-align: right;
+}
+
+.year-overview.income,
+.year-overview.saved {
+  min-width: 120px;
+}
+
+.year-overview.expenses {
+  min-width: 150px;
+}
+
+
+.year-overview.expenses-percentage,
+.year-overview.saved-percentage {
+  color: $gray-3;
+}
+
+.year-overview.expenses-percentage {
+  min-width: 70px;
+
+}
+.year-overview.saved-percentage {
+  min-width: 70px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

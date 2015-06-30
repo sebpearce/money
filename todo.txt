@@ -1,0 +1,19 @@
+make category/source page to add/delete/edit them
+don't allow alpha chars in input box
+make fields click-editable
+date must be current date or earlier
+have line separating days in expenses (easier to distinguish)
+make preview text more prominent
+return select box to current category on submit
+make select box for income page
+:) change order of expense/income items to reflect bnz (adds at the top)
+make decimal ignored in inputbox
+fix html entities issue (preview shows Partner&#39;s job)
+make css more responsive
+
+can choose start/end dates for expenses/income page
+
+cosmetics (add to clothes?)
+travel
+medical
+

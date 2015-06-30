@@ -4,11 +4,11 @@
 
   <nav>
     <ul>
-      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a>
-      <li class="active-link">Income</li>
-      <a href="{{ url_for('Overview') }}"><li>Overview</li></a>
+      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a><li class="active-link">Income</li><a href="{{ url_for('Overview') }}"><li>Month overview</li></a><a href="{{ url_for('OverviewYear') }}"><li>Year overview</li></a>
     </ul>
   </nav>
+
+  <div class="content-container">
 
   <div class="income content">
 
@@ -16,9 +16,19 @@
 
     <div class="input-box-container">
       <form id="input-form" method="post" action="">
-        <label for="input-box">Amount:</label>
-        <input type="text" id="input-box" name="input" autofocus="true" maxlength="8">
-        <input id="input-submit" type="submit" value="Add">
+        <div class="inline-block">
+          <label for="input-box">Amount:</label>
+          <input type="text" id="input-box" name="input" autofocus="true" maxlength="8">
+          <input id="input-submit" type="submit" value="Add">
+        </div>
+        <label for="source-select-preview">Source:</label>
+        <select id="source-select-preview">
+          <option selected disabled>Choose one</option>
+          <option disabled>&mdash;</option>
+          {% for src in allSourceRows %}
+          <option value="{{src.id}}">{{src.name}}</option>
+          {% endfor %}
+        </select>
       </form>
     </div>
 
@@ -38,5 +48,58 @@
 
     </div> <!-- end content -->
 
+    </div> <!-- end of content-container-->
+
   </div>
+
+<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery.hotkeys.js') }}"></script>
+<script src="{{ url_for('static', filename='income_and_expenses.js') }}"></script>
+
+
+<script type="text/javascript">
+
+  categoryNames = {};
+  sourceNames = {};
+  shortcuts = {};
+
+  sourceNames[0] = "";
+  {% for row in allSourceRows %}
+  sourceNames[{{ row.id }}] = "{{ row.name }}";
+  {% endfor %}  
+
+  categoryNames[0] = "";
+  {% for row in allCategoryRows %}
+  categoryNames[{{ row.id }}] = "{{ row.name }}";
+  {% endfor %}
+
+  // get shortcuts from DB and make relationship to category IDs
+  {% for row in allShortcuts %}
+  shortcuts[{{ row.id }}] = "{{ row.value }}";
+  {% endfor %}
+
+
+  // bind shortcut keys
+
+  {% for row in allShortcuts %}
+
+  $(document).bind('keydown', '{{ row.value }}', function(e){
+    category = {{ row.id }};
+    console.log("category set to ", category);
+    $( '#category-preview ').text(categoryNames[category]);
+  });
+  $(' #input-box ').bind('keydown', '{{ row.value }}', function(e){
+    category = {{ row.id }};
+    console.log("category set to ", category);
+    $( '#category-preview ').text(categoryNames[category]);
+    e.stopPropagation();
+    e.preventDefault();
+  });
+
+  {% endfor %}
+
+</script>
+
+
 {% endblock %}

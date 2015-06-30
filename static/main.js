@@ -21,7 +21,15 @@ function formatAsMoney(x) {
 
 function incrementDate(d, times) {
   times = times ? times : 1;
-  return d.setDate(d.getDate() + times);
+  now = new Date();
+  oldDate = new Date(d.getTime());
+  oldDate.setDate(d.getDate() + times);
+
+  if (oldDate > now) {
+    return d;
+  } else {
+    return d.setDate(d.getDate() + times);
+  }
 }
 
 function decrementDate(d, times) {
@@ -47,7 +55,31 @@ function validateVariables() {
   // validate amount
   var amt_re = /^[0-9]+$/
 
-  return (date_re.test(date) && amt_re.test(amount) && isIntNotString(category));  
+  return (date_re.test(date) 
+         && amt_re.test(amount) 
+         && amount > 0 
+         && isIntNotString(category));  
+}
+
+function processInput(value) {
+
+  // extract number and optional category flag
+  var re = /^([0-9]+)$/
+  if (!re.test(value)) {
+    return false;
+  }
+  if (value.match(re)) {
+
+    amount = value;
+    console.log("amount set to ", amount);
+    $( '#amount-preview ').text(formatAsMoney(amount));
+
+  } else {
+
+    console.log("processInput failed to find a match");
+
+  }
+
 }
 
 function updateOneRow(rowId, field, value) {

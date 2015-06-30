@@ -1,5 +1,11 @@
 import os
 import sys
+from sys import argv
+
+if len(argv) == 2:
+  FILENAME = 'sqlite:///' + argv[1]
+else:
+  FILENAME = 'sqlite:///money.db'
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -49,7 +55,7 @@ class IncomeItem(Base):
 class Variable(Base):
   __tablename__ = 'variables'
 
-  variable = Column(String(24), primary_key = True)
+  name = Column(String(24), primary_key = True)
   value = Column(Integer, nullable = False)
 
   # @property
@@ -64,6 +70,6 @@ class Variable(Base):
   #   }
 
 
-engine = create_engine('sqlite:///money.db')
+engine = create_engine(FILENAME)
 
 Base.metadata.create_all(engine)
