@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Money</title>
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+    filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+    filename='css/bootstrap-theme.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+    filename='css/style.css') }}">  
+
+</head>
+
+<body>
+
+{% block content %}
+
+  <div class="page-wrapper">
+
+  <nav>
+    <ul>
+      <li class="active-link">Expenses</li><a href="{{ url_for('Income') }}"><li>Income</li></a><a href="{{ url_for('Overview') }}"><li>Month overview</li></a><a href="{{ url_for('OverviewYear') }}"><li>Year overview</li></a>
+    </ul>
+  </nav>
+
+  <div class="content-container">
+
+    <h1>Money</h1>
+
+  </div> <!-- end of content-container-->
+
+  </div>
+
+<script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+{% endblock %}
+
+</body>
+
+</html>

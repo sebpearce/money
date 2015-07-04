@@ -1,0 +1,64 @@
+body {
+}
+
+$sidebar-width: 250px;
+
+.page-wrapper {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  width: $sidebar-width;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  padding: 30px 20px 0 20px;
+  background: $menu-item-bg-color;
+  border-right: 1px solid $light-gray;
+  border-left: 1px solid $light-gray;
+
+  li.active a {
+    background-color: $active-menu-item-bg-color;
+    color: $active-menu-item-text-color;
+    &:hover {
+      background-color: $active-menu-item-bg-color;
+    }
+  }
+}
+
+[class*='app-logo-'] {
+  display: block;
+  margin-bottom: 20px;
+  // background: url('../img/espresso.jpg');
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  font-size: 100px;
+  font-weight: $light-weight;
+  text-align: center;
+  color: white;
+  border-radius: 7px;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+}
+
+.app-logo-expenses {
+  background: $app-logo-expenses-color;
+}
+
+.app-logo-income {
+  background: $app-logo-income-color;
+}
+
+.nav li a {
+  color: $menu-item-text-color;
+  &:hover {
+    background-color: darken($menu-item-bg-color, 8%);
+  }
+}
+
+.main {
+  margin: 0 0 0 $sidebar-width + 20px;
+  padding-top: 30px;
+  padding-left: 20px;
+}

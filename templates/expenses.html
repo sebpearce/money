@@ -1,81 +1,86 @@
-<!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
-    filename='reset.css') }}">  
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
-    filename='style.css') }}">
-
-  <meta charset="UTF-8">
-
-  <title>Expenses</title>
-
-</head>
-
-<body>
-
+{% extends "index.html" %}
 {% block content %}
 
-  <div class="page-wrapper">
+<div class="page-wrapper">
+    
+  <nav class="sidebar">
 
-  <nav>
-    <ul>
-      <li class="active-link">Expenses</li><a href="{{ url_for('Income') }}"><li>Income</li></a><a href="{{ url_for('Overview') }}"><li>Month overview</li></a><a href="{{ url_for('OverviewYear') }}"><li>Year overview</li></a>
+    <span class="app-logo-expenses">$</span>
+
+    <ul class="nav nav-pills nav-stacked">
+      <li class="active"><a href="#">Expenses</a></li>
+      <li><a href="{{ url_for('Income') }}">Income</a></li>
+      <li><a href="{{ url_for('OverviewMonth') }}">Month overview</a></li>
+      <li><a href="{{ url_for('OverviewYear') }}">Year overview</a></li>
     </ul>
+
   </nav>
+    
+  <article class="main">
 
-  <div class="content-container">
+    <h1 class="page-heading">Expenses</h1>
+    
 
-  <div class="expenses content">
-
-  <h1 class="page-heading">Expenses</h1>
-
-    <div class="input-box-container">
-      <form id="input-form" method="post" action="">
-        <div class="inline-block">
-          <label for="input-box">Amount:</label>
-          <input type="text" id="input-box" name="input" autofocus="true" maxlength="8">
-          <input id="input-submit" type="submit" value="Add">
+      <div class="panel panel-default input-panel">
+        <div class="panel-heading">
+          <h3 class="panel-title">Add an expense item</h3>
         </div>
-        <label for="category-select-preview">Category:</label>
-        <select id="category-select-preview">
-          <option selected disabled>Choose one</option>
-          <option disabled>&mdash;</option>
-          {% for category in allCategoryRows %}
-          <option value="{{category.id}}">{{category.name}}</option>
-          {% endfor %}
-        </select>
+        <div class="panel-body">
 
-      </form>
-    </div>
+          <div class="input-form-container">
 
+            <form class="form-inline" id="input-form" method="post" action="">
+
+              <!-- <label for="input-box">Amount:</label><br> -->
+
+              <div class="input-group">
+                <div class="input-group-addon">$</div>
+                <input type="text" class="form-control" id="input-box" name="input" autofocus="true" maxlength="8" placeholder="0.00">
+              </div>
+
+              <select id="category-select-preview" class="form-control">
+                <option selected disabled>Category</option>
+                <option disabled>&mdash;</option>
+                {% for category in allCategoryRows %}
+                <option value="{{category.id}}">{{category.name}}</option>
+                {% endfor %}
+              </select>
+
+              <button id="input-submit" class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add</button>
+
+            </form>
+
+          </div>
+
+        </div>
+      </div>
+
+
+
+    
     <div id="preview-box">
       
       <span id="date-preview"></span>
       <span id="amount-preview"></span>
       <span id="category-preview"></span>
-
+    
     </div>
-
+    
     <div class="table-container">
-
+    
       {% include "expenses_table.html" %}
-
+    
     </div>
 
-  </div> <!-- end content -->
+  </article>
 
-  </div> <!-- end of content-container-->
+</div> <!-- page-wrapper -->
 
-  </div>
-
-<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery.hotkeys.js') }}"></script>
-<script src="{{ url_for('static', filename='income_and_expenses.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.hotkeys.js') }}"></script>
+<script src="{{ url_for('static', filename='js/income_and_expenses.js') }}"></script>
 
 <script type="text/javascript">
 
@@ -121,7 +126,3 @@
 </script>
 
 {% endblock %}
-
-</body>
-
-</html>

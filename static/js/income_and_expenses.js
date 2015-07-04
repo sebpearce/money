@@ -58,7 +58,6 @@ $(document).bind('keydown', 'enter', function(e){
 $( '#input-box' ).on('input', function(){
 
   var val = $(this).val();
-  console.log(val);
   processInput(val);
 
 });

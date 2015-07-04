@@ -1,35 +1,44 @@
-{% extends "expenses.html" %}
+{% extends "index.html" %}
 {% block content %}
   <div class="page-wrapper">
 
-  <nav>
-    <ul>
-      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a><li class="active-link">Income</li><a href="{{ url_for('Overview') }}"><li>Month overview</li></a><a href="{{ url_for('OverviewYear') }}"><li>Year overview</li></a>
+  <nav class="sidebar">
+    <span class="app-logo-income">$</span>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="{{ url_for('Expenses') }}">Expenses</a></li>
+      <li class="active"><a href="{{ url_for('Income') }}">Income</a></li>
+      <li><a href="{{ url_for('OverviewMonth') }}">Month overview</a></li>
+      <li><a href="{{ url_for('OverviewYear') }}">Year overview</a></li>
     </ul>
   </nav>
 
-  <div class="content-container">
+  <article class="main">
 
-  <div class="income content">
+    <h1 class="page-heading">Income</h1>
 
-  <h1 class="page-heading">Income</h1>
+    <div class="input-form-container">
 
-    <div class="input-box-container">
-      <form id="input-form" method="post" action="">
-        <div class="inline-block">
-          <label for="input-box">Amount:</label>
-          <input type="text" id="input-box" name="input" autofocus="true" maxlength="8">
-          <input id="input-submit" type="submit" value="Add">
+      <form class="form-inline" id="input-form" method="post" action="">
+
+        <label for="input-box">Amount:</label><br>
+
+        <div class="input-group">
+          <div class="input-group-addon">$</div>
+          <input type="text" class="form-control" id="input-box" name="input" autofocus="true" maxlength="8" placeholder="0.00">
         </div>
-        <label for="source-select-preview">Source:</label>
-        <select id="source-select-preview">
-          <option selected disabled>Choose one</option>
+
+        <select id="source-select-preview" class="form-control">
+          <option selected disabled>Source</option>
           <option disabled>&mdash;</option>
           {% for src in allSourceRows %}
           <option value="{{src.id}}">{{src.name}}</option>
           {% endfor %}
         </select>
+
+        <button id="input-submit" class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add</button>
+
       </form>
+
     </div>
 
     <div id="preview-box">
@@ -46,16 +55,15 @@
 
     </div>
 
-    </div> <!-- end content -->
+  </article> <!-- article -->
 
-    </div> <!-- end of content-container-->
+</div> <!-- page-wrapper -->
 
-  </div>
-
-<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery.hotkeys.js') }}"></script>
-<script src="{{ url_for('static', filename='income_and_expenses.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.hotkeys.js') }}"></script>
+<script src="{{ url_for('static', filename='js/income_and_expenses.js') }}"></script>
 
 
 <script type="text/javascript">

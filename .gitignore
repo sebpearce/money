@@ -10,3 +10,4 @@ Thumbs.db
 .sass-cache
 real_*
 *.jpg
+*.pyc

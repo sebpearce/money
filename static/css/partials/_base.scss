@@ -1,0 +1,12 @@
+// Font weights
+$light-weight: 100;
+$regular-weight: 400;
+$bold: 600;
+
+// Base font
+$base-font-family: 'Helvetica Neue', sans-serif;
+$base-font-weight: $regular-weight;
+$base-font-size: 14px;
+$base-line-height: 1.3;
+
+@import "modules/all";

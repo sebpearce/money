@@ -1,34 +1,38 @@
-{% extends "expenses.html" %}
+{% extends "index.html" %}
 {% block content %}
 
-  <div class="page-wrapper">
+<div class="page-wrapper">
 
-  <nav>
-    <ul>
-      <a href="{{ url_for('Expenses') }}"><li>Expenses</li></a><a href="{{ url_for('Income') }}"><li>Income</li></a><a href="{{ url_for('Overview') }}"><li>Month overview</li></a><li class="active-link">Year overview</li>
+  <nav class="sidebar">
+
+    <span class="app-logo">$</span>
+
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="{{ url_for('Expenses') }}">Expenses</a></li>
+      <li><a href="{{ url_for('Income') }}">Income</a></li>
+      <li><a href="{{ url_for('OverviewMonth') }}">Month overview</a></li>
+      <li class="active"><a href="{{ url_for('OverviewYear') }}">Year overview</a></li>
     </ul>
+
   </nav>
 
-  <div class="content-container">
+  <article class="main">
 
-    <div class="year-overview content">  
-
-      <h1 class="page-heading">Year overview</h1>
-
-      <div class="year-overview table-container">
-
-        {% include "overview_year_table.html" %}
-
-      </div>
-
+    <h1 class="page-heading">Year overview</h1>
+    
+    <div class="year-overview table-container">
+    
+      {% include "overview_year_table.html" %}
+    
     </div>
 
-  </div>
+  </article>
 
-  </div>
-  
-<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery.hotkeys.js') }}"></script>
+</div> <!-- page-wrapper -->
+
+<script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.hotkeys.js') }}"></script>
 
 {% endblock %}

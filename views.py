@@ -274,9 +274,9 @@ def getMonthsArray(num_months):
 
 @app.route('/overview/')
 @app.route('/overview/month/')
-def Overview():
+def OverviewMonth():
 
-  months = getMonthsArray(4)
+  months = getMonthsArray(1)
 
   allCategoryRows = session.query(Category).all()
   allSourceRows = session.query(IncomeSource).all()
@@ -293,7 +293,7 @@ def Overview():
 
   # get total expenses and income for current year
 
-  return render_template('overview.html', 
+  return render_template('overview_month.html', 
                          months = months,
                          categoryNames = categoryNames,
                          sourceNames = sourceNames)

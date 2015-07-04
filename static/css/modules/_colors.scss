@@ -1,0 +1,28 @@
+$hue: 212;
+$sat: 55%;
+
+$very-dark: hsl($hue, $sat, 30%);
+$dark: hsl($hue, $sat, 40%);
+$base-color: hsl($hue, $sat, 50%);
+$light: hsl($hue, $sat, 60%);
+$very-light: hsl($hue, $sat, 70%);
+
+$profit-color: hsl(100,40%,40%);
+$loss-color: hsl(0,$sat,40%);
+
+$very-light-gray: hsl(0,0%,97%);
+$light-gray: hsl(0,0%,85%);
+$gray: hsl(0,0%,70%);
+$dark-gray: hsl(0,0%,50%);
+$very-dark-gray: hsl(0,0%,40%);
+
+$black: hsl($hue,10%,20%);
+
+
+$menu-item-bg-color: $very-light-gray;
+$menu-item-text-color: $base-color;
+$active-menu-item-bg-color: $base-color;
+$active-menu-item-text-color: white;
+
+$app-logo-expenses-color: $dark;
+$app-logo-income-color: $profit-color;

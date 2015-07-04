@@ -1,6 +1,6 @@
 
 var date_obj = new Date;
-var amount = '1920';
+var amount = '0';
 var category = 8;
 var description = '';
 var source = 1;
@@ -63,16 +63,28 @@ function validateVariables() {
 
 function processInput(value) {
 
-  // extract number and optional category flag
-  var re = /^([0-9]+)$/
-  if (!re.test(value)) {
+  // if input box is empty
+  if (!value) {
+    console.log("Amount set to 0");
+    amount = '0';
     return false;
   }
-  if (value.match(re)) {
 
+  // extract number and optional category flag
+  var re = /^([0-9]+)?(\.)?([0-9]*)?$/
+  if (!re.test(value)) {
+    console.log("Amount set to 0");
+    amount = '0';
+    return false;
+  }
+
+  if (value.match(re)) {
     amount = value;
-    console.log("amount set to ", amount);
-    $( '#amount-preview ').text(formatAsMoney(amount));
+    console.log("Amount set to", amount);
+
+
+    $( '#input-box ').val(formatAsMoney(amount));
+    // $( '#amount-preview ').text(formatAsMoney(amount));
 
   } else {
 
